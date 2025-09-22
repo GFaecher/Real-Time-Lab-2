@@ -32,7 +32,7 @@ void delay(unsigned long ms);	// From the Arduino API.
 //	- PB3/D13 drives the green LED via solder bridge SB15
 //	- PA6/A5 is tied to PB6/D5 via SB16
 //	- PA5/A4 (DAC2) is tied to PB7/D4 via SB18
-void pinMode (enum Pin pin, char *mode);
+void pinMode (enum Pin pin, const char *mode);
 void digitalWrite (enum Pin pin, bool value);
 bool digitalRead  (enum Pin pin);
 
