@@ -21,6 +21,7 @@ void task_blink_red( void * pvParameters )
     for ( ;; ) {
 	if (do_blink_red) {
 	    stuff...
+        }
     }
 }
 
