@@ -23,9 +23,12 @@ void task_blink_red( void * pvParameters )
 
             digitalWrite(D12, red_led_status);
             red_led_status = !red_led_status;
-            vTaskDelay(250);
             
+        } else {
+            digitalWrite(D12, 0);
+            red_led_status = 0;
         }
+        vTaskDelay(250);
     }
 }
 
@@ -42,9 +45,12 @@ void task_blink_grn( void * pvParameters )
 
             digitalWrite(D13, green_led_status);
             green_led_status = !green_led_status;
-            vTaskDelay(167);
             
+        } else {
+            digitalWrite(D13, 0);
+            green_led_status = 0;
         }
+        vTaskDelay(167);
     }
 }
 
@@ -54,16 +60,16 @@ void task_uart (void *pvParameters) {
     const char prompt[] = "R=red, G=green, B=both, N=neither: ";
     char rxByte, buf[40];
     while (1) {
-	serial_write(USART2, prompt);
-	rxByte = serial_read (USART2);
-	int red  = (rxByte == 'R' || rxByte == 'r');
-	int grn  = (rxByte == 'G' || rxByte == 'g');
-	int both = (rxByte == 'B' || rxByte == 'b');
-	do_blink_red = red || both;
-	do_blink_grn = grn || both;
-	strcpy (buf, "Red=");   strcat (buf, (do_blink_red?"on":"off"));
-	strcat (buf, ", grn=");	strcat (buf, (do_blink_grn?"on\n\r":"off\n\r"));
-	serial_write(USART2, buf);
+        serial_write(USART2, prompt);
+        rxByte = serial_read (USART2);
+        int red  = (rxByte == 'R' || rxByte == 'r');
+        int grn  = (rxByte == 'G' || rxByte == 'g');
+        int both = (rxByte == 'B' || rxByte == 'b');
+        do_blink_red = red || both;
+        do_blink_grn = grn || both;
+        strcpy (buf, "Red=");   strcat (buf, (do_blink_red?"on":"off"));
+        strcat (buf, ", grn=");	strcat (buf, (do_blink_grn?"on\n\r":"off\n\r"));
+        serial_write(USART2, buf);
     }
 }
 
@@ -81,7 +87,7 @@ int main()
 	    "Decide which LEDs to blink",
 	    100, // stack size in words
 	    NULL, // parameter passed into task, e.g. "(void *) 1"
-	    tskIDLE_PRIORITY+1, // priority
+	    tskIDLE_PRIORITY, // priority
 	    &task_handle_uart);
     if (OK_UART != pdPASS) for ( ;; );
 
@@ -91,7 +97,7 @@ int main()
         "Blink Red LED",	// for debugging
         100,			// stack size in words
         NULL,		// parameter passed into task
-        tskIDLE_PRIORITY+2, // priority
+        tskIDLE_PRIORITY + 1, // priority
         &task_handle_red);
     if (OK_red != pdPASS) for ( ;; );
 
@@ -101,7 +107,7 @@ int main()
         "Blink Green LED",	// for debugging
         100,			// stack size in words
         NULL,		// parameter passed into task
-        tskIDLE_PRIORITY+2, // priority
+        tskIDLE_PRIORITY + 1, // priority
         &task_handle_grn);
     if (OK_green != pdPASS) for ( ;; );
 
